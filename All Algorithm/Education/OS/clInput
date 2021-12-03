@@ -1,0 +1,4 @@
+for list in $*
+do
+	cat $list
+done

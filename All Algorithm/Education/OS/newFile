@@ -1,0 +1,10 @@
+n=106
+if (( n>100 )); then
+    if (( n%2==0 )); then
+        echo "YES"
+    else
+        echo "NO"
+    fi
+else
+    echo "NO"
+fi
