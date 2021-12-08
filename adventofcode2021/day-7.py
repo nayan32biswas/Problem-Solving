@@ -26,7 +26,6 @@ def find_ans(arr):
             # temp += abs(key - key_val) * store[key_val]
             temp += series_sum(abs(key - key_val)) * store[key_val]
         ans = min(ans, temp)
-    # print(ans)
     return int(ans)
 
 
