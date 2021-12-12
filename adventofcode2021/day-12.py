@@ -1,11 +1,5 @@
-import json
-
 with open("input.txt", "r") as inp:
     lines = inp.readlines()
-
-
-def print_dict(data):
-    print(json.dumps(data, indent=4, sort_keys=True))
 
 
 class Graph:
@@ -71,7 +65,7 @@ class Graph:
 graph = Graph()
 graph.store_data(lines)
 
-# graph.first("start")
-graph.second("start")
+graph.first("start")
+# graph.second("start")
 
 print(graph.ans)
