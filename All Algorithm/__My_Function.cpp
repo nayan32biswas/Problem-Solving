@@ -213,7 +213,6 @@ class sqrt
     }
 };
 
-
 /**************************************************************/
 
 class chess_
@@ -315,6 +314,76 @@ public:
         for (int i = lo - 1; i < hi; i++)
             Max = max(Max, markRange[i]);
         return Max;
+    }
+};
+
+/**************************************************************/
+
+class StringConversion
+{
+private:
+    map<int, string> store;
+    void answerMap()
+    {
+        int valid_start = 33, valid_end = 126;
+        store[0] = '0', store[127] = '0';
+
+        for (int i = 1; i < valid_start; store[i] = i + 'A', i++)
+            ;
+        for (int i = valid_start; i <= valid_end; store[i] = i, i++)
+            ;
+    }
+    string get_zeros(int n)
+    {
+        string zeros = "";
+        while (n--)
+            zeros += '0';
+        return zeros;
+    }
+    int binaryToDecimal(string binary)
+    {
+        int decimal = 0, base = 1, n = binary.length();
+        for (int i = n - 1; i >= 0; i--)
+        {
+            if (binary[i] == '1')
+                decimal += base;
+            base = base * 2;
+        }
+        return decimal;
+    }
+    string to_binary_string(int n)
+    {
+        string s = "";
+        while (n != 0)
+            s = to_string(n % 2) + s, n = n / 2;
+        return s;
+    }
+    string senarytoBinary(string str)
+    {
+        string ans = "";
+        for (int i = 0; i < str.size(); ans += to_binary_string((str[i] % 64)), i++)
+            ;
+        return ans;
+    }
+    string binaryToSeptenary(string str)
+    {
+        string ans = "";
+        for (int i = 0, n; i < str.size(); ans += store[binaryToDecimal(str.substr(i, 7))], i += 7)
+            ;
+
+        return ans;
+    }
+
+public:
+    StringConversion()
+    {
+        answerMap();
+    }
+    string solve(string input)
+    {
+        string binaryString = senarytoBinary(input);
+        string ans = binaryToSeptenary(binaryString);
+        return ans;
     }
 };
 
@@ -594,7 +663,8 @@ class PrimeThings
 {
 #define Size 10000000
     typedef long long lli;
-    vector<unsigned> pri((Size >> 6) + 5), prime;
+    unsigned pri[(Size >> 6) + 5];
+    vector<unsigned> prime;
 #define setBits(n) (pri[n >> 6] |= (1 << ((n >> 1) & 31)))
 #define checkBit(n) (pri[n >> 6] & (1 << ((n >> 1) & 31)))
 #define isP(n) ((n == 2) || (n > 1 && (n & 1) && !checkBit(n)))
@@ -1314,9 +1384,12 @@ class MinimumCoinChange_
 
 class MinimumCoinChange_rec
 {
+private:
 #define Size 3
-    int arr[] = {3, 2, 1};
+    int arr[3] = {3, 2, 1};
     int dp[8000][Size + 1];
+
+public:
     int call(int n, int j)
     {
         if (n == 0)
@@ -1726,8 +1799,8 @@ class segmentTree_
         int left = pos * 2 + 1;
         int right = pos * 2 + 2;
         int mid = (start + End) / 2;
-        constructSTUtil(input[], start, mid, left);
-        constructSTUtil(input[], mid + 1, End, right);
+        constructSTUtil(input, start, mid, left);
+        constructSTUtil(input, mid + 1, End, right);
         segmentTree[pos] = segmentTree[left] + segmentTree[right];
     }
     void updateRange(int n, int lo, int hi, int value)
@@ -2006,11 +2079,11 @@ class SCC
     vector<vector<int>> graph, component, graphRev;
 
 public:
-    void init(int Size)
+    void init(int size)
     {
-        graph.resize(Size + 1);
-        mark.resize(Size + 1);
-        graphRev.resize(Size + 1);
+        graph.resize(size + 1);
+        mark.resize(size + 1);
+        graphRev.resize(size + 1);
     }
     int numberOfComponent()
     {
@@ -2076,13 +2149,13 @@ class tarjanArticulationPoint
     vector<pair<int, int>> hiLowTime, articulationEdge;
 
 public:
-    void init(int Size)
+    void init(int size)
     {
         time = 0;
-        mark.resize(Size + 1);
-        graph.resize(Size + 1);
-        parents.resize(Size + 1);
-        hiLowTime.resize(Size + 1);
+        mark.resize(size + 1);
+        graph.resize(size + 1);
+        parents.resize(size + 1);
+        hiLowTime.resize(size + 1);
     }
     void add(int from, int to)
     {
@@ -2146,11 +2219,11 @@ class BreadthFirstSearch
     vector<vector<int>> graph;
 
 public:
-    void init(int Size)
+    void init(int size)
     {
-        graph.resize(Size + 1);
-        mark.resize(Size + 1);
-        dis.resize(Size + 1);
+        graph.resize(size + 1);
+        mark.resize(size + 1);
+        dis.resize(size + 1);
     }
     void add(int from, int to)
     {
@@ -2232,7 +2305,7 @@ class BellmanFord
 class Dijkstra
 {
 private:
-    int Size, source, MAXI, inc;
+    int size, source, MAXI, inc;
     bool RUN;
     vector<vector<pair<int, int>>> graph;
     vector<int> parents;
@@ -2328,145 +2401,160 @@ public:
     }
     void init(int s)
     {
-        RUN = false, Size = s, MAXI = INT_MAX;
-        graph.resize(Size);
-        parents.resize(Size);
-        distance.resize(Size);
-        mark.resize(Size);
+        RUN = false, size = s, MAXI = INT_MAX;
+        graph.resize(size);
+        parents.resize(size);
+        distance.resize(size);
+        mark.resize(size);
     }
 };
 
 /**************************************************************/
-
+class SolKPath
+{
+public:
 #define Size 105
-struct edge
-{
-    int to, weight;
-    edge(int a, int b) : to(a), weight(b) {}
-};
-vector<edge> graph[Size];
-void spfa(int start, int n, vector<int> dis)
-{
-    int used[Size] = {};
-    queue<int> Que;
-    for (int i = 0; i < n; dis[i++] = INT_MAX)
-        ;
-    dis[start] = 0;
-    Que.push(start);
-    while (!Que.empty())
+    struct edge
     {
-        int tnt = Que.front();
-        Que.pop();
-        used[tnt] = 0;
-        for (auto it : graph[tnt])
+        int to, weight;
+        edge(int a, int b) : to(a), weight(b) {}
+    };
+    vector<edge> graph[Size];
+    void spfa(int start, int n, vector<int> dis)
+    {
+        int used[Size] = {};
+        queue<int> Que;
+        for (int i = 0; i < n; dis[i++] = INT_MAX)
+            ;
+        dis[start] = 0;
+        Que.push(start);
+        while (!Que.empty())
         {
-            if (dis[it.to] > dis[tnt] + it.weight)
+            int tnt = Que.front();
+            Que.pop();
+            used[tnt] = 0;
+            for (auto it : graph[tnt])
             {
-                dis[it.to] = dis[tnt] + it.weight;
-                if (used[it.to] == 0)
+                if (dis[it.to] > dis[tnt] + it.weight)
                 {
-                    used[it.to] = 1;
-                    Que.push(it.to);
+                    dis[it.to] = dis[tnt] + it.weight;
+                    if (used[it.to] == 0)
+                    {
+                        used[it.to] = 1;
+                        Que.push(it.to);
+                    }
                 }
             }
         }
     }
-}
-struct EEEE
-{
-    int node, g, h;
-    EEEE(int a, int b, int c) : node(a), g(b), h(c) {}
-    bool operator<(const EEEE &a) const
+    struct EEEE
     {
-        return g + h > a.g + a.h;
+        int node, g, h;
+        EEEE(int a, int b, int c) : node(a), g(b), h(c) {}
+        bool operator<(const EEEE &a) const
+        {
+            return g + h > a.g + a.h;
+        }
+    };
+    void sol_kpath(int start, int _end, int k_th, int node)
+    {
+        vector<int> dis(Size), cnt_kpath(Size), kpath(Size);
+        spfa(_end, node, dis);
+        for (int i = 0; i < node; cnt_kpath[i] = 0, kpath[i++] = -1)
+            ;
+        cnt_kpath[start] = 0;
+        kpath[start] = -1;
+        priority_queue<EEEE, vector<EEEE>> pQue;
+        EEEE tnt(0, 0, 0);
+        pQue.push(EEEE(start, 0, dis[start]));
+        while (!pQue.empty())
+        {
+            tnt = pQue.top();
+            pQue.pop();
+            //printf("%d %d %d\n", tn.node, tn.g, tn.h);
+            if (cnt_kpath[tnt.node] >= k_th || kpath[tnt.node] == tnt.g + tnt.h)
+                continue;
+            cnt_kpath[tnt.node]++;
+            kpath[tnt.node] = tnt.g + tnt.h;
+            if (tnt.node == _end && cnt_kpath[tnt.node] == k_th)
+            {
+                printf("%d\n", tnt.g);
+                return;
+            }
+            for (auto it : graph[tnt.node])
+            {
+                pQue.push(EEEE(it.to, tnt.g + it.weight, dis[it.to]));
+            }
+        }
     }
 };
-void sol_kpath(int start, int _end, int k_th, int node)
-{
-    vector<int> dis(Size), cnt_kpath(Size), kpath(Size);
-    spfa(_end, node, dis);
-    for (int i = 0; i < node; cnt_kpath[i] = 0, kpath[i++] = -1)
-        ;
-    cnt_kpath[start] = 0;
-    kpath[start] = -1;
-    priority_queue<EEEE, vector<EEEE>> pQue;
-    EEEE tnt(0, 0, 0);
-    pQue.push(EEEE(start, 0, dis[start]));
-    while (!pQue.empty())
-    {
-        tnt = pQue.top();
-        pQue.pop();
-        //printf("%d %d %d\n", tn.node, tn.g, tn.h);
-        if (cnt_kpath[tnt.node] >= k_th || kpath[tnt.node] == tnt.g + tnt.h)
-            continue;
-        cnt_kpath[tnt.node]++;
-        kpath[tnt.node] = tnt.g + tnt.h;
-        if (tnt.node == _end && cnt_kpath[tnt.node] == k_th)
-        {
-            printf("%d\n", tnt.g);
-            return;
-        }
-        for (auto it : graph[tnt.node])
-        {
-            pQue.push(EEEE(it.to, tnt.g + it.weight, dis[it.to]));
-        }
-    }
-}
 
 /**************************************************************/
 
-vector<int> Path(int path[Size][Size], int node, int from, int to)
+class FloydWarshall
 {
-    vector<int> temp;
-    temp.push_back(to);
-    while ((to >= 0 && to < node) && path[from][to] != from)
+public:
+    vector<int> Path(int path[Size][Size], int node, int from, int to)
     {
-        temp.push_back(path[from][to]);
-        to = path[from][to];
+        vector<int> temp;
+        temp.push_back(to);
+        while ((to >= 0 && to < node) && path[from][to] != from)
+        {
+            temp.push_back(path[from][to]);
+            to = path[from][to];
+        }
+        temp.push_back(from);
+        reverse(temp.begin(), temp.end());
+        return temp;
     }
-    temp.push_back(from);
-    reverse(temp.begin(), temp.end());
-    return temp;
-}
-void FloydWarshall(int graph[Size][Size], int path[Size][Size], int node)
-{
-    for (int k = 0; k < node; k++)
-        for (int i = 0; i < node; i++)
-            for (int j = 0; j < node; j++)
-            {
-                if (graph[i][j] > graph[i][k] + graph[k][j])
+    void floydWarshall(int graph[Size][Size], int path[Size][Size], int node)
+    {
+        for (int k = 0; k < node; k++)
+            for (int i = 0; i < node; i++)
+                for (int j = 0; j < node; j++)
                 {
-                    graph[i][j] = graph[i][k] + graph[k][j];
-                    path[i][j] = path[k][j];
+                    if (graph[i][j] > graph[i][k] + graph[k][j])
+                    {
+                        graph[i][j] = graph[i][k] + graph[k][j];
+                        path[i][j] = path[k][j];
+                    }
                 }
-            }
-    vector<int> direction = Path(path, node, 2, 5);
-    for (auto it : direction)
-        cout << it << " ";
-    puts("");
-}
+        vector<int> direction = Path(path, node, 2, 5);
+        for (auto it : direction)
+            cout << it << " ";
+        puts("");
+    }
+};
 
 /**************************************************************/
 
-int Min_vartex_cover(int node, int isGurd)
+class MinVartexCover
 {
-    if (dp[node][isGurd] != -1)
-        return dp[node][isGurd];
-    int sum = 0;
-    for (auto v : graph[node])
-    {
-        if (v != parent[node])
-        {
-            parent[v] = node;
-            if (isGurd == 0)
-                sum += Min_vartex_cover(v, 1);
-            else
-                sum += min(Min_vartex_cover(v, 1), Min_vartex_cover(v, 0));
-        }
-    }
-    return dp[node][isGurd] = sum + isGurd;
-}
+#define Size 100
+    int dp[Size][Size];
+    vector<int> graph[Size];
+    map<int, int> parent;
 
+public:
+    int minVartexCover(int node, int isGurd)
+    {
+        if (dp[node][isGurd] != -1)
+            return dp[node][isGurd];
+        int sum = 0;
+        for (auto v : graph[node])
+        {
+            if (v != parent[node])
+            {
+                parent[v] = node;
+                if (isGurd == 0)
+                    sum += minVartexCover(v, 1);
+                else
+                    sum += min(minVartexCover(v, 1), minVartexCover(v, 0));
+            }
+        }
+        return dp[node][isGurd] = sum + isGurd;
+    }
+};
 /**************************************************************/
 
 class karuskalMST
@@ -2524,29 +2612,31 @@ class karuskalMST
 };
 
 /**************************************************************/
-
-int graph[100][100], parent[100], Node;
-bool visit[100];
-void primMST()
+class PrimMST
 {
-    int i, u, J, k, Min, key[Node + 5];
-    for (i = 0; i <= Node; i++)
-        key[i] = 99999;
-    key[0] = key[1] = 0;
-    parent[0] = parent[1] = -1;
-    for (i = 1; i < Node; i++)
+public:
+    int graph[100][100], parent[100], Node;
+    bool visit[100];
+    void primMST()
     {
-        for (k = 1, Min = MAX; k <= Node; k++)
-            if (visit[k] == false && key[k] < Min)
-                Min = key[i], u = k;
+        int i, u, J, k, Min, key[Node + 5];
+        for (i = 0; i <= Node; i++)
+            key[i] = 99999;
+        key[0] = key[1] = 0;
+        parent[0] = parent[1] = -1;
+        for (i = 1; i < Node; i++)
+        {
+            for (k = 1, Min = INT32_MAX; k <= Node; k++)
+                if (visit[k] == false && key[k] < Min)
+                    Min = key[i], u = k;
 
-        visit[u] = true;
-        for (J = 1; J <= Node; J++)
-            if (graph[u][J] > 0 && visit[J] == false && graph[u][J] < key[J])
-                parent[J] = u, key[J] = graph[u][J];
+            visit[u] = true;
+            for (J = 1; J <= Node; J++)
+                if (graph[u][J] > 0 && visit[J] == false && graph[u][J] < key[J])
+                    parent[J] = u, key[J] = graph[u][J];
+        }
     }
-}
-
+};
 /**************************************************************/
 
 class FordFulkerson
@@ -2726,7 +2816,7 @@ class Calculator
             sum = sum * 10 + (it - '0');
         return sum;
     }
-    double postfix_to_cal(vector<string> &postfix)
+    double postfix_to_cal(vector<string> postfix)
     {
         stack<double> S;
         double a, b;
