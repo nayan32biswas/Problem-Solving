@@ -1,4 +1,3 @@
-// Unsolved
 #include <iostream>
 #include <algorithm>
 #include <vector>
